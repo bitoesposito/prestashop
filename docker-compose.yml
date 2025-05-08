@@ -1,40 +1,33 @@
-version: '3.8'
-
 services:
   prestashop:
-    image: prestashop/prestashop:8.1
+    image: prestashop/prestashop:latest
     container_name: prestashop
-    restart: always
-    ports:
-      - "8080:80"
-    environment:
-      - DB_SERVER=db
-      - DB_NAME=prestashop
-      - DB_USER=prestashop
-      - DB_PASSWORD=prestashop
-      - PS_INSTALL_AUTO=1
-      - PS_DEV_MODE=1
-      - PS_FOLDER_ADMIN=admin-dev
-    volumes:
-      - prestashop_data:/var/www/html
-      - ./themes/classic:/var/www/html/themes/classic
-      - ./modules:/var/www/html/modules
-      - ./override:/var/www/html/override
     depends_on:
       - db
+    environment:
+      DB_SERVER: db
+      DB_NAME: prestashop
+      DB_USER: prestashop
+      DB_PASSWORD: prestashop
+      PS_DOMAIN: localhost:8080
+      PS_FOLDER_ADMIN: admin
+      PS_DEV_MODE: 1
+    ports:
+      - "8080:80"
+    volumes:
+      - ./modules:/var/www/html/modules
+      - ./override:/var/www/html/override
+      - ./themes:/var/www/html/themes
+      - prestashop_data:/var/www/html
 
   db:
     image: mysql:5.7
-    container_name: prestashop-db
-    restart: always
+    container_name: mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=prestashop
-      - MYSQL_USER=prestashop
-      - MYSQL_PASSWORD=prestashop
-      # user admin
-      # email admin@mail.com
-      # password paolillo2g
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: prestashop
+      MYSQL_USER: prestashop
+      MYSQL_PASSWORD: prestashop
     volumes:
       - db_data:/var/lib/mysql
 
